@@ -40,6 +40,8 @@ class TutorsController extends AppController
             return false;
         }
         parent::isAuthorized($user);
+        throw new UnauthorizedException('UnauthorizedException ');
+        return false;
     }
 
     /**

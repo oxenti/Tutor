@@ -23,54 +23,68 @@ class TutorsControllerTest extends IntegrationTestCase
         'plugin.tutor.users',
     ];
 
+    /**
+     * additionProvider method
+     *
+     * @return array
+     */
+    public function sessionProvider()
+    {
+        $sessionAdmin = [
+            'Auth' => [
+                'User' => [
+                    'id' => 5,
+                    'usertype_id' => 100,
+                    'username' => 'Admin',
+                ]
+            ]
+        ];
+        $sessionTutor = [
+            'Auth' => [
+                'User' => [
+                    'id' => 2,
+                    'usertype_id' => 4,
+                    'username' => 'Tutor',
+                ]
+            ]
+        ];
+        return [[$sessionAdmin], [$sessionTutor]];
+    }
 
     /**
      * Test index method
+     * @dataProvider sessionProvider
      */
-    public function testIndex()
+    public function testIndex($session)
     {
-        $this->session([
-            'Auth' => [
-                'User' => [
-                    'id' => 1,
-                    'usertype_id' => 100,
-                    'username' => 'testing',
-                    // other keys.
-                ]
-            ]
-        ]);
-
+        $this->session($session);
         $this->configRequest([
             'headers' => ['Accept' => 'application/json']
         ]);
         $this->get('/tutor/tutors');
-        $this->assertResponseOk();
-        $respondeData = json_decode($this->_response->body());
-        $count = count($respondeData->tutors);
+        if ($session['Auth']['User']['usertype_id'] == 4) {
+            $this->assertResponseError();
+        } else {
+            $this->assertResponseOk();
+            $respondeData = json_decode($this->_response->body());
+            $count = count($respondeData->tutors);
 
-        $Tutors = TableRegistry::get('Tutor.Tutors');
-        $query = $Tutors->find('all')->contain(['Users']);
-        $tutorsJson = json_encode(['tutors' => $query], JSON_PRETTY_PRINT);
-        
-        $this->assertEquals($count, $query->count());
-        $this->assertEquals($tutorsJson, $this->_response->body());
+            $Tutors = TableRegistry::get('Tutor.Tutors');
+            $query = $Tutors->find('all')->contain(['Users']);
+            $tutorsJson = json_encode(['tutors' => $query], JSON_PRETTY_PRINT);
+            
+            $this->assertEquals($count, $query->count());
+            $this->assertEquals($tutorsJson, $this->_response->body());
+        }
     }
 
     /**
      * Test view method
+     * @dataProvider sessionProvider
      */
-    public function testView()
+    public function testView($session)
     {
-        $this->session([
-            'Auth' => [
-                'User' => [
-                    'id' => 1,
-                    'usertype_id' => 4,
-                    'username' => 'testing',
-                    // other keys.
-                ]
-            ]
-        ]);
+        $this->session($session);
 
         $this->configRequest([
             'headers' => ['Accept' => 'application/json']
@@ -87,13 +101,18 @@ class TutorsControllerTest extends IntegrationTestCase
 
     /**
      * Test add method
+     * @dataProvider sessionProvider
      */
-    public function testAdd()
+    public function testAdd($session)
     {
+        $this->session($session);
+        $this->configRequest([
+            'headers' => ['Accept' => 'application/json']
+        ]);
+
         $postData = [
             'cpf' => '11122233388',
             'description' => 'Tutor de teste que ainda nao esta no banco!',
-            'user_id' => 1,
             'user' => [
                 'usertype_id' => 1,
                 'gender_id' => 1,
@@ -112,65 +131,43 @@ class TutorsControllerTest extends IntegrationTestCase
                 ]
             ]
         ];
-        $Tutors = TableRegistry::get('Tutor.Tutors');
-
-        $this->session([
-            'Auth' => [
-                'User' => [
-                    'id' => 1,
-                    'usertype_id' => 4,
-                    'username' => 'testing',
-                    // other keys.
-                ]
-            ]
-        ]);
-        $this->configRequest([
-            'headers' => ['Accept' => 'application/json']
-        ]);
-
         $this->post('/tutor/tutors', $postData);
-        $this->assertResponseSuccess();
 
-        $query = $Tutors->find()->where(['Tutors.cpf' => $postData['cpf']]);
-        $this->assertEquals(1, $query->count());
+        if ($session['Auth']['User']['id'] == 2) {
+            $this->assertResponseError();// erro because this id is already associated with a tutor record
+        } else {
+            $Tutors = TableRegistry::get('Tutor.Tutors');
+            $this->assertResponseSuccess();
 
-        $postData = [
-            'cpf' => '11122233399',
-            'description' => 'Tutor de teste que ainda nao esta no banco!',
-            'user_id' => 1,
-        ];
+            $query = $Tutors->find()->where(['Tutors.cpf' => $postData['cpf']]);
+            $this->assertEquals(1, $query->count());
 
-        $this->configRequest([
-            'headers' => ['Accept' => 'application/json']
-        ]);
+            $postData = [
+                'cpf' => '11122233399',
+                'description' => 'Tutor de teste que ainda nao esta no banco!',
+                'user_id' => 1,
+            ];
 
-        $this->post('/tutor/tutors', $postData);
-        $this->assertResponseSuccess();
-        $Tutors = TableRegistry::get('Tutor.Tutors');
-        $query = $Tutors->find()->where(['Tutors.cpf' => $postData['cpf']]);
-        $this->assertEquals(1, $query->count());
+            $this->configRequest([
+                'headers' => ['Accept' => 'application/json']
+            ]);
+
+            $this->post('/tutor/tutors', $postData);
+            $this->assertResponseSuccess();
+            $Tutors = TableRegistry::get('Tutor.Tutors');
+            $query = $Tutors->find()->where(['Tutors.cpf' => $postData['cpf']]);
+            $this->assertEquals(1, $query->count());
+        }
     }
 
     /**
      * Test edit method
-     *
+     * @dataProvider sessionProvider
      * @return void
      */
-    public function testEdit()
+    public function testEdit($session)
     {
-        $this->session([
-            'Auth' => [
-                'User' => [
-                    'id' => 2,
-                    'usertype_id' => 4,
-                    'username' => 'testing',
-                    // other keys.
-                ],
-                'profile' => [
-                    'id' => 1,
-                ]
-            ]
-        ]);
+        $this->session($session);
 
         $postData = [
             'cpf' => '99988877766',
@@ -211,24 +208,12 @@ class TutorsControllerTest extends IntegrationTestCase
 
     /**
      * Test delete method
-     *
+     * @dataProvider sessionProvider
      * @return void
      */
-    public function testDelete()
+    public function testDelete($session)
     {
-        $this->session([
-            'Auth' => [
-                'User' => [
-                    'id' => 2,
-                    'usertype_id' => 4,
-                    'username' => 'testing',
-                    // other keys.
-                ],
-                'profile' => [
-                    'id' => 1,
-                ]
-            ]
-        ]);
+        $this->session($session);
         $this->configRequest([
             'headers' => ['Accept' => 'application/json']
         ]);

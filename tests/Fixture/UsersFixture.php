@@ -54,5 +54,26 @@ class UsersFixture extends TestFixture
             'last_name' => 'Lorem ipsum dolor sit amet',
             'email' => 'teste2@teste.com'
         ],
+        [
+            'id' => 3,
+            'usertype_id' => 2,
+            'first_name' => 'Lorem ipsum dolor sit amet',
+            'last_name' => 'Lorem ipsum dolor sit amet',
+            'email' => 'teste3@teste.com'
+        ],
+        [
+            'id' => 4,
+            'usertype_id' => 3,
+            'first_name' => 'Lorem ipsum dolor sit amet',
+            'last_name' => 'Lorem ipsum dolor sit amet',
+            'email' => 'teste4@teste.com'
+        ],
+        [
+            'id' => 5,
+            'usertype_id' => 100,
+            'first_name' => 'Lorem ipsum dolor sit amet',
+            'last_name' => 'Lorem ipsum dolor sit amet',
+            'email' => 'teste5@teste.com'
+        ],
     ];
 }
