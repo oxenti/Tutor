@@ -1,0 +1,24 @@
+{
+    "name": "your-name-here/Tutor",
+    "description": "Tutor plugin for CakePHP",
+    "type": "cakephp-plugin",
+    "require": {
+        "php": ">=5.4.16",
+        "oxenti/soft-delete": "dev-master",
+        "cakephp/cakephp": "~3.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Tutor\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tutor\\Test\\": "tests",
+            "Cake\\Test\\": "./vendor/cakephp/cakephp/tests"
+        }
+    }
+}
