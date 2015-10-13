@@ -29,6 +29,17 @@ class TutorsControllerTest extends IntegrationTestCase
      */
     public function testIndex()
     {
+        $this->session([
+            'Auth' => [
+                'User' => [
+                    'id' => 1,
+                    'usertype_id' => 100,
+                    'username' => 'testing',
+                    // other keys.
+                ]
+            ]
+        ]);
+
         $this->configRequest([
             'headers' => ['Accept' => 'application/json']
         ]);
@@ -50,6 +61,17 @@ class TutorsControllerTest extends IntegrationTestCase
      */
     public function testView()
     {
+        $this->session([
+            'Auth' => [
+                'User' => [
+                    'id' => 1,
+                    'usertype_id' => 4,
+                    'username' => 'testing',
+                    // other keys.
+                ]
+            ]
+        ]);
+
         $this->configRequest([
             'headers' => ['Accept' => 'application/json']
         ]);
@@ -92,6 +114,16 @@ class TutorsControllerTest extends IntegrationTestCase
         ];
         $Tutors = TableRegistry::get('Tutor.Tutors');
 
+        $this->session([
+            'Auth' => [
+                'User' => [
+                    'id' => 1,
+                    'usertype_id' => 4,
+                    'username' => 'testing',
+                    // other keys.
+                ]
+            ]
+        ]);
         $this->configRequest([
             'headers' => ['Accept' => 'application/json']
         ]);
@@ -126,6 +158,20 @@ class TutorsControllerTest extends IntegrationTestCase
      */
     public function testEdit()
     {
+        $this->session([
+            'Auth' => [
+                'User' => [
+                    'id' => 2,
+                    'usertype_id' => 4,
+                    'username' => 'testing',
+                    // other keys.
+                ],
+                'profile' => [
+                    'id' => 1,
+                ]
+            ]
+        ]);
+
         $postData = [
             'cpf' => '99988877766',
             'description' => 'Tutor de teste que ainda nao esta no banco!',
@@ -170,6 +216,19 @@ class TutorsControllerTest extends IntegrationTestCase
      */
     public function testDelete()
     {
+        $this->session([
+            'Auth' => [
+                'User' => [
+                    'id' => 2,
+                    'usertype_id' => 4,
+                    'username' => 'testing',
+                    // other keys.
+                ],
+                'profile' => [
+                    'id' => 1,
+                ]
+            ]
+        ]);
         $this->configRequest([
             'headers' => ['Accept' => 'application/json']
         ]);

@@ -24,21 +24,21 @@ class TutorsController extends AppController
         //Student view
         //tutor add,view,edit - proprio
         //admin,*
-        // if ($user['usertype_id'] === 100 || $this->request->action === 'view') {
-        //     return true;
-        // } elseif ($user['usertype_id'] === 4) {
-        //     if (isset($this->request->params['pass'][0]) && ($this->request->params['pass'][0] == $user['profile']['id'])) {
-        //         return true;
-        //     }
-        //     if ($this->request->action === 'index') {
-        //         throw new UnauthorizedException('You dont have access to this action ');
-        //         return false;
-        //     }
-        //     return true;
-        // } else {
-        //     throw new UnauthorizedException('You dont have access to this action ');
-        //     return false;
-        // }
+        if ($user['usertype_id'] === 100 || $this->request->action === 'view') {
+            return true;
+        } elseif ($user['usertype_id'] === 4) {
+            if (isset($this->request->params['pass'][0])) {
+                return ($this->request->params['pass'][0] == $this->getProfileInfo($user['id'])->id);
+            }
+            if ($this->request->action === 'index') {
+                throw new UnauthorizedException('You dont have access to this action ');
+                return false;
+            }
+            return true;
+        } else {
+            throw new UnauthorizedException('You dont have access to this action ');
+            return false;
+        }
         parent::isAuthorized($user);
     }
 
@@ -87,11 +87,10 @@ class TutorsController extends AppController
     {
         $tutor = $this->Tutors->newEntity();
         if ($this->request->is('post')) {
-            // if ($this->Auth->user('usertype_id')==4) {
-            //     debug($this->Auth->user('id'));
-            //     $this->request->data['user_id'] = $this->Auth->user('id');
-            //     // $this->request->data['user_id'] = 8;
-            // }
+            if ($this->Auth->user('usertype_id') == 4) {
+                $this->request->data['user_id'] = $this->Auth->user('id');
+                // $this->request->data['user_id'] = 8;
+            }
             $tutor = $this->Tutors->patchEntity($tutor, $this->request->data);
             if ($this->Tutors->save($tutor)) {
                 $message = 'The tutor has been saved.';
