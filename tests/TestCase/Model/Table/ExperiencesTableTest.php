@@ -117,7 +117,6 @@ class ExperiencesTableTest extends TestCase
             'tutor_id' => ['_required' => 'This field is required'],
             'position' => ['_required' => 'This field is required'],
             'start' => ['_required' => 'This field is required'],
-            'end' => ['_required' => 'This field is required'],
         ];
         $this->assertEquals($expected, $case, '');
 
@@ -128,7 +127,6 @@ class ExperiencesTableTest extends TestCase
             'tutor_id' => ['_required' => 'This field is required'],
             'position' => ['_required' => 'This field is required'],
             'start' => ['_required' => 'This field is required'],
-            'end' => ['_required' => 'This field is required'],
         ];
         $this->assertEquals($expected, $case, '');
 
@@ -161,5 +159,53 @@ class ExperiencesTableTest extends TestCase
         $errors = $case1->errors();
         $expected = ['_existsIn' => 'This value does not exist'];
         $this->assertEquals($expected, $errors['tutor_id'], 'não foi retornado erro para tutor_id invalido');
+    }
+
+    /**
+     * Test verifyExists method
+     * @return void
+     */
+    public function testVerifyExists()
+    {
+        $data = [
+            'company' => ['name' => 'teste'],
+            'title' => 'testador',
+            'startDate' => Time::now(),
+            'end' => Time::now()
+        ];
+        $tutorId = 1;
+        $this->assertFalse($this->Experiences->verifyExists($tutorId, $data), 'message');
+
+        $data = [
+            'company' => ['name' => 'Lorem ipsum dolor sit amet'],
+            'title' => 'Lorem ipsum dolor sit amet',
+            'startDate' => '2015-10-06',
+        ];
+        $this->assertTrue($this->Experiences->verifyExists($tutorId, $data), 'message');
+    }
+
+    /**
+     * Test verifyExists method
+     * @return void
+     */
+    public function testSaveExperiences()
+    {
+        $data = [
+            0 => [
+                'tutor_id' => 1,
+                'company' => 'empresa de teste',
+                'position' => 'testador',
+                'start' => Time::now(),
+                'end' => Time::now(),
+            ],
+            1 => [
+                'tutor_id' => 1,
+                'company' => 'empresa de teste',
+                'position' => 'testador',
+                'start' => Time::now(),
+                'end' => Time::now(),
+            ]
+        ];
+        $this->assertTrue($this->Experiences->saveExperiences($data), 'message');
     }
 }

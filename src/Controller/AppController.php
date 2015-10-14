@@ -15,7 +15,6 @@ class AppController extends BaseController
         parent::isAuthorized($user);
     }
 
-    //criar funcao pra pegar o profile do cara reusavel
     /**
      * getProfileInfo method.
      * @param int $userId user id

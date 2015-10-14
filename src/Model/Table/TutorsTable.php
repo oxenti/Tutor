@@ -2,6 +2,7 @@
 namespace Tutor\Model\Table;
 
 use Cake\Core\Configure;
+use Cake\I18n\Time;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -132,5 +133,37 @@ class TutorsTable extends AppTable
             }
         }
         return $tutor;
+    }
+
+    /**
+     *
+     */
+    public function importLinkedinExperience($tutorId, $linkedinPositions)
+    {
+        unset($linkedinPositions['_total']);
+        $experiencesData = [];
+        $index = 0;
+        foreach ($linkedinPositions['values'] as $position) {
+            $position['startDate'] = new Time($position['startDate']['year'] . '-' . $position['startDate']['month'] . '-1');
+            if (!$this->Experiences->verifyExists($tutorId, $position)) {
+                $current = 1;
+                if (isset($position['endDate'])) {
+                    $current = 0;
+                    $endDate = new Time($position['endDate']['year'] . '-' . $position['endDate']['month'] . '-1');
+                    $experiencesData[$index]['end'] = $endDate;
+                }
+                $experiencesData[$index] = ['tutor_id' => $tutorId,
+                    'position' => $position['title'],
+                    'company' => $position['company']['name'],
+                    'current' => $current,
+                    'start' => $position['startDate'],
+                ];
+            }
+            $index++;
+        }
+        if (!empty($experiencesData)) {
+            return $this->Experiences->saveExperiences($experiencesData);
+        }
+        return true;
     }
 }

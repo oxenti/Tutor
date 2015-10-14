@@ -1,6 +1,7 @@
 <?php
 namespace Tutor\Test\TestCase\Model\Table;
 
+use Cake\I18n\Time;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Tutor\Model\Table\TutorsTable;
@@ -143,14 +144,6 @@ class TutorsTableTest extends TestCase
         $errors = $case1->errors();
         $expected = ['_isUnique' => 'This value is already in use'];
         $this->assertEquals($expected, $errors['user_id'], 'não foi retornado erro para user_id invalido');
-        
-        // $cases[0]['user_id'] = 123123123;
-        // $cases[0]['cpf'] = 23123123;
-        // $case1 = $this->Tutors->newEntity($cases[0]);
-        // $result = $this->Tutors->save($case1);
-        // $errors = $case1->errors();
-        // $expected = ['_existsIn' => 'This value does not exist'];
-        // $this->assertEquals($expected, $errors['user_id'], 'não foi retornado erro para user_id invalido');
 
         $case2 = $this->Tutors->newEntity($cases[1]);
         $result = $this->Tutors->save($case2);
@@ -159,5 +152,34 @@ class TutorsTableTest extends TestCase
         $errors = $case2->errors();
         $this->assertEquals($expected, $errors['cpf'], 'não foi retornado erro para usertype invalido');
         $this->assertEquals($expected, $errors['description'], 'não foi retornado erro para gender invalido');
+    }
+
+    public function testEditHandler()
+    {
+        $postData = [
+            'cpf' => '99988877766',
+            'description' => 'Tutor de teste que ainda nao esta no banco!',
+            'experiences' => [
+                0 => [
+                    'tutor_id' => 1,
+                    'company' => 'nome da empresa que nao existe no banco',
+                    'position' => 'testador',
+                    'start' => Time::now(),
+                    'end' => Time::now(),
+                ],
+                1 => [
+                    'id' => 1,
+                    'tutor_id' => 1,
+                    'company' => 'Trocando o nome da empresa',
+                    'position' => 'testador',
+                    'start' => Time::now(),
+                    'end' => Time::now(),
+                ],
+            ]
+        ];
+
+        $tutor = $this->Tutors->editHandler($postData, 1);
+        $this->assertInstanceOf('Tutor\Model\Entity\Tutor', $tutor, 'Caso valido não gerou obejeto esperado');
+        $this->assertEmpty($tutor->errors(), 'error should be empty');
     }
 }

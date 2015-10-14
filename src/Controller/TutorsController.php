@@ -19,11 +19,6 @@ class TutorsController extends AppController
      */
     public function isAuthorized($user)
     {
-        //logado view
-        //Professor,Institution index
-        //Student view
-        //tutor add,view,edit - proprio
-        //admin,*
         if ($user['usertype_id'] === 100 || $this->request->action === 'view') {
             return true;
         } elseif ($user['usertype_id'] === 4) {
@@ -40,10 +35,8 @@ class TutorsController extends AppController
             return false;
         }
         parent::isAuthorized($user);
-        throw new UnauthorizedException('UnauthorizedException ');
-        return false;
     }
-
+    
     /**
      * Index method
      *
@@ -84,6 +77,7 @@ class TutorsController extends AppController
      * Add method
      *
      * @return void Redirects on successful add, renders view otherwise.
+     * @throws \Cake\Network\Exception\NotFoundException When record could not be saved.
      */
     public function add()
     {
@@ -109,7 +103,6 @@ class TutorsController extends AppController
 
     /**
      * Edit method
-     *
      * @param string|null $tutorId Tutor id.
      * @return void Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Network\Exception\NotFoundException When record not found.
@@ -151,6 +144,36 @@ class TutorsController extends AppController
             ]);
         } else {
             throw new NotFoundException('The tutor could not be deleted. Please, try again.');
+        }
+    }
+
+
+    /**
+     * import_experiences_linkedin
+     * make the request to linkedin api to get the historic of prositions and
+     * handle the data to add to experiences of the tutor.
+     */
+    public function import_experiences_linkedin()
+    {
+        $this->request->allowMethod(['post']);
+        if ($this->request->data) {
+            $user = $this->Auth->user('id');
+            // $tutorId = $this->getProfileInfo($user['id'])->id;
+            $tutorId = 1;
+            $token = $this->request->data['usersocialdata']['linkedin_token'];
+            $linkedinData = $this->Linkedin->linkedinget('v1/people/~/positions:(title,company,start-date,end-date)', $token);
+
+            if ($this->Tutors->importLinkedinExperience($tutorId, $linkedinData)) {
+                $this->set([
+                    'success' => true,
+                        'data' => [
+                            'message' => __('Experiences imported from linkedin with success')
+                        ],
+                        '_serialize' => ['success', 'data']
+                    ]);
+            } else {
+                throw new NotFoundException('The Experiences could not be imported. Please, try again.');
+            }
         }
     }
 }

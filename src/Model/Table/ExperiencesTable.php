@@ -82,7 +82,6 @@ class ExperiencesTable extends AppTable
 
         $validator
             ->add('end', 'valid', ['rule' => 'date'])
-            ->requirePresence('end', 'create')
             ->notEmpty('end');
 
         $validator
@@ -106,5 +105,43 @@ class ExperiencesTable extends AppTable
     {
         $rules->add($rules->existsIn(['tutor_id'], 'Tutors'));
         return $rules;
+    }
+
+    /**
+     * verifyExists
+     * Verify wheter a tutor already had the given experience recorded
+     * @param int $tutorId tutor id
+     * @param array $experienceData experience info
+     * @return bool
+     */
+    public function verifyExists($tutorId, $exprienceData)
+    {
+        $experience = $this->find('all', ['conditions' => ['tutor_id' => $tutorId,
+            'position' => $exprienceData['title'],
+            'start' => $exprienceData['startDate'],
+            'company' => $exprienceData['company']['name']]])->first();
+        if (empty($experience)) {
+            return false;
+        }
+        return true;
+    }
+    
+    /**
+     *
+     */
+    public function saveExperiences($experiencesData)
+    {
+        $saved = 0;
+        $experiences = $this->newEntities($experiencesData);
+        foreach ($experiences as $experience) {
+            if ($this->save($experience)) {
+                $saved++;
+            }
+        }
+        if ($saved == count($experiences)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
