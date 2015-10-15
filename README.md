@@ -58,6 +58,11 @@ In your app's 'config/app.php' add this to your Datasources array:
         'quoteIdentifiers' => false,
     ],
 ```
+In your app's initial folder execute plugin's migrations:
+
+```sh
+./bin/cake migrations migfrate -p Tutor
+```
 
 ### Configuration files
 Move the 'tutor.php' config file from the plugin's config folder to your app's config folder.
