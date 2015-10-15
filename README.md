@@ -1,4 +1,4 @@
-# Tutor plugin for CakePHP
+# OxenTI Tutor API plugin for CakePHP 3
 
 ## Installation
 
