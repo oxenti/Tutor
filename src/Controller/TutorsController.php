@@ -47,8 +47,8 @@ class TutorsController extends AppController
         $finder = !isset($this->request->query['finder'])?'All': $this->request->query['finder'];
         $this->paginate = [
            'finder' => $finder,
-           'contain' => ['Users'],
-           'order' => ['Users.first_name'],
+           'contain' => ['Users', 'Users.Personalinformations'],
+           'order' => ['Personalinformations.first_name'],
         ];
         $this->set('tutors', $this->paginate($this->Tutors));
         $this->set('_serialize', ['tutors']);
@@ -64,7 +64,7 @@ class TutorsController extends AppController
     public function view($tutorId = null)
     {
         $tutor = $this->Tutors->get($tutorId, [
-            'contain' => ['Users']
+           'contain' => ['Users', 'Users.Personalinformations'],
         ]);
         if (is_null($tutor)) {
             throw new NotFoundException(__('The tutor could not be finded'));
