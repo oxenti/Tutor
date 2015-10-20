@@ -157,8 +157,7 @@ class TutorsController extends AppController
         $this->request->allowMethod(['post']);
         if ($this->request->data) {
             $user = $this->Auth->user('id');
-            // $tutorId = $this->getProfileInfo($user['id'])->id;
-            $tutorId = 1;
+            $tutorId = $this->getProfileInfo($user['id'])->id;
             $token = $this->request->data['usersocialdata']['linkedin_token'];
             $linkedinData = $this->Linkedin->linkedinget('v1/people/~/positions:(title,company,start-date,end-date)', $token);
 
