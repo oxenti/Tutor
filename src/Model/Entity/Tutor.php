@@ -36,5 +36,5 @@ class Tutor extends Entity
         '*' => true,
         'id' => false,
     ];
-    protected $_hidden = ['created', 'is_active', 'modified'];
+    protected $_hidden = ['created', 'user_id', 'is_active', 'modified'];
 }
