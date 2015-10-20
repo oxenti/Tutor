@@ -13,7 +13,7 @@ return [
                 // ]
             ],
             'belongsToMany' => [
-                // 'Addresses' => [
+                // 'Example.Class' => [
                 //     'className' => 'Example.Class',
                 //     'joinTable' => 'join_table',
                 //     'foreignKey' => 'tutor_id',
