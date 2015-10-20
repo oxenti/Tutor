@@ -61,7 +61,7 @@ In your app's 'config/app.php' add this to your Datasources array:
 In your app's initial folder execute plugin's migrations:
 
 ```sh
-./bin/cake migrations migfrate -p Tutor
+./bin/cake migrations migrate -p Tutor
 ```
 
 ### Configuration files
