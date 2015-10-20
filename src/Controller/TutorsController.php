@@ -85,7 +85,6 @@ class TutorsController extends AppController
         if ($this->request->is('post')) {
             if ($this->Auth->user('usertype_id') == 4) {
                 $this->request->data['user_id'] = $this->Auth->user('id');
-                // $this->request->data['user_id'] = 8;
             }
             $tutor = $this->Tutors->patchEntity($tutor, $this->request->data);
             if ($this->Tutors->save($tutor)) {
