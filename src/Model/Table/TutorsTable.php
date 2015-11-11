@@ -34,7 +34,7 @@ class TutorsTable extends AppTable
         parent::initialize($config);
 
         $this->table('tutors');
-        $this->displayField('id');
+        $this->displayField('user_id');
         $this->primaryKey('id');
 
         $this->addBehavior('Timestamp');
