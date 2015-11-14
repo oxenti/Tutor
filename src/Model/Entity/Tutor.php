@@ -2,6 +2,7 @@
 namespace Tutor\Model\Entity;
 
 use Cake\ORM\Entity;
+use Cake\ORM\TableRegistry;
 
 /**
  * Tutor Entity.
@@ -36,5 +37,22 @@ class Tutor extends Entity
         '*' => true,
         'id' => false,
     ];
+    
     protected $_hidden = ['cpf', 'created', 'user_id', 'is_active', 'modified'];
+    
+    protected $_virtual = ['name'];
+
+    /**
+     * virtual field full name
+     */
+    protected function _getName()
+    {
+        $Personalinformations = TableRegistry::get('Users.Personalinformations');
+        $userId = $this->_properties['user_id'];
+        $personalinformations = $Personalinformations->find()
+        ->select(['first_name', 'last_name'])
+        ->where(['user_id' => $userId])
+        ->first();
+        return (is_null($personalinformations))?' ':$personalinformations->first_name . ' ' . $personalinformations->last_name;
+    }
 }
