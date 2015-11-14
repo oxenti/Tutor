@@ -40,7 +40,7 @@ class Tutor extends Entity
     
     protected $_hidden = ['cpf', 'created', 'user_id', 'is_active', 'modified'];
     
-    protected $_virtual = ['name'];
+    protected $_virtual = ['name', 'avatar'];
 
     /**
      * virtual field full name
@@ -54,5 +54,21 @@ class Tutor extends Entity
         ->where(['user_id' => $userId])
         ->first();
         return (is_null($personalinformations))?' ':$personalinformations->first_name . ' ' . $personalinformations->last_name;
+    }
+
+    /**
+     * virtual field avatar
+     */
+    protected function _getAvatar()
+    {
+        $Personalinformations = TableRegistry::get('Users');
+        $userId = $this->_properties['user_id'];
+        debug($userId);
+        $user = $Personalinformations->find()
+        ->select(['avatar_path'])
+        ->where(['id' => $userId])
+        ->first();
+        $avatarPath = (is_null($user->avatar_path))? ' ' : $user->avatar_path;
+        return $avatarPath;
     }
 }
