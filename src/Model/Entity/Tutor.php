@@ -63,7 +63,6 @@ class Tutor extends Entity
     {
         $Personalinformations = TableRegistry::get('Users');
         $userId = $this->_properties['user_id'];
-        debug($userId);
         $user = $Personalinformations->find()
         ->select(['avatar_path'])
         ->where(['id' => $userId])
