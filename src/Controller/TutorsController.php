@@ -64,7 +64,7 @@ class TutorsController extends AppController
     public function view($tutorId = null)
     {
         $tutor = $this->Tutors->get($tutorId, [
-           'contain' => ['Users', 'Users.Personalinformations'],
+           'contain' => ['Users', 'Users.Personalinformations', 'Experiences'],
         ]);
         if (is_null($tutor)) {
             throw new NotFoundException(__('The tutor could not be finded'));
