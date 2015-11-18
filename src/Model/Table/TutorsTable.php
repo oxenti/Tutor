@@ -111,22 +111,23 @@ class TutorsTable extends AppTable
         ]);
         $experienceIds = [];
         $experiences = [];
-
-        foreach ($postData['experiences'] as $experience) {
-            if (isset($experience['id'])) {
-                $experienceIds[] = $experience['id'];
+        if (isset($postData['experiences'])) {
+            foreach ($postData['experiences'] as $experience) {
+                if (isset($experience['id'])) {
+                    $experienceIds[] = $experience['id'];
+                }
             }
-        }
-        foreach ($tutor->experiences as $experience) {
-            if (!in_array($experience->id, $experienceIds) || empty($experienceIds)) {
-                $experience->is_active = 0;
-                $experience->dirty('is_active', true);
-                $experiences[] = $experience;
+            foreach ($tutor->experiences as $experience) {
+                if (!in_array($experience->id, $experienceIds) || empty($experienceIds)) {
+                    $experience->is_active = 0;
+                    $experience->dirty('is_active', true);
+                    $experiences[] = $experience;
+                }
             }
         }
 
         $tutor = $this->patchEntity($tutor, $postData);
-        
+
         if (!empty($experiences)) {
             foreach ($experiences as $experience) {
                 $tutor->experiences[] = $experience;
