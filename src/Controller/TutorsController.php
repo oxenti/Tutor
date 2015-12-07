@@ -83,10 +83,12 @@ class TutorsController extends AppController
     {
         $tutor = $this->Tutors->newEntity();
         if ($this->request->is('post')) {
-            if ($this->Auth->user('usertype_id') == 4) {
-                $this->request->data['user_id'] = $this->Auth->user('id');
-            }
+            $this->request->data['user_id'] = $this->Auth->user('id');
+            $user = $this->Tutors->Users->get($this->Auth->user('id'));
+            $this->Tutors->Users->patchEntity($user, $this->request->data['user']);
+            //unset($this->request->data['user']);
             $tutor = $this->Tutors->patchEntity($tutor, $this->request->data);
+            $tutor->user = $user;
             if ($this->Tutors->save($tutor)) {
                 $message = 'The tutor has been saved.';
                 $this->set([
@@ -95,6 +97,8 @@ class TutorsController extends AppController
                     '_serialize' => ['success', 'message']
                 ]);
             } else {
+                debug($tutor);
+                die();
                 throw new NotFoundException('The tutor could not be saved. Please, try again.');
             }
         }
