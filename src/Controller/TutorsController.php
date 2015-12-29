@@ -86,7 +86,7 @@ class TutorsController extends AppController
             $this->request->data['user_id'] = $this->Auth->user('id');
             $user = $this->Tutors->Users->get($this->Auth->user('id'));
             $this->Tutors->Users->patchEntity($user, $this->request->data['user']);
-            //unset($this->request->data['user']);
+            unset($this->request->data['user']);
             $tutor = $this->Tutors->patchEntity($tutor, $this->request->data);
             $tutor->user = $user;
             if ($this->Tutors->save($tutor)) {
