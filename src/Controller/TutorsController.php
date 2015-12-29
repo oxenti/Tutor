@@ -160,10 +160,11 @@ class TutorsController extends AppController
     {
         $this->request->allowMethod(['post']);
         if ($this->request->data) {
-            $user = $this->Auth->user('id');
-            $tutorId = $this->getProfileInfo($user['id'])->id;
-            $token = $this->request->data['usersocialdata']['linkedin_token'];
-            $linkedinData = $this->Linkedin->linkedinget('v1/people/~/positions:(title,company,start-date,end-date)', $token);
+            $userId = $this->Auth->user('id');
+            $tutorId = $this->getProfile($userId);
+            // caso a requisição seja feita utilizando o mesmo plugin do ws em versoes futuras
+            // $token = $this->request->data['usersocialdata']['linkedin_token'];
+            // $linkedinData = $this->Linkedin->linkedinget('v1/people/~/positions:(title,company,start-date,end-date)', $token);
 
             if ($this->Tutors->importLinkedinExperience($tutorId, $linkedinData)) {
                 $this->set([

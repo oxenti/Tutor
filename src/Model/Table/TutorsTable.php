@@ -135,22 +135,23 @@ class TutorsTable extends AppTable
         }
         return $tutor;
     }
-
     /**
-     *
+     * 
+     * 
      */
     public function importLinkedinExperience($tutorId, $linkedinPositions)
     {
-        unset($linkedinPositions['_total']);
+        unset($linkedinPositions['@total']);
         $experiencesData = [];
         $index = 0;
-        foreach ($linkedinPositions['values'] as $position) {
-            $position['startDate'] = new Time($position['startDate']['year'] . '-' . $position['startDate']['month'] . '-1');
+        foreach ($linkedinPositions as $position) {
+            $position['startDate'] = new Time($position['start-date']['year'] . '-' . $position['start-date']['month'] . '-1');
+            unset($position['start-date']);
             if (!$this->Experiences->verifyExists($tutorId, $position)) {
                 $current = 1;
                 if (isset($position['endDate'])) {
                     $current = 0;
-                    $endDate = new Time($position['endDate']['year'] . '-' . $position['endDate']['month'] . '-1');
+                    $endDate = new Time($position['end-date']['year'] . '-' . $position['end-date']['month'] . '-1');
                     $experiencesData[$index]['end'] = $endDate;
                 }
                 $experiencesData[$index] = ['tutor_id' => $tutorId,
@@ -163,8 +164,35 @@ class TutorsTable extends AppTable
             $index++;
         }
         if (!empty($experiencesData)) {
+            // debug($experiencesData);
+            // die();
             return $this->Experiences->saveExperiences($experiencesData);
         }
+        //Utilizando o plugin do linkedin do WS
+        // unset($linkedinPositions['_total']);
+        // $experiencesData = [];
+        // $index = 0;
+        // foreach ($linkedinPositions['values'] as $position) {
+        //     $position['startDate'] = new Time($position['startDate']['year'] . '-' . $position['startDate']['month'] . '-1');
+        //     if (!$this->Experiences->verifyExists($tutorId, $position)) {
+        //         $current = 1;
+        //         if (isset($position['endDate'])) {
+        //             $current = 0;
+        //             $endDate = new Time($position['endDate']['year'] . '-' . $position['endDate']['month'] . '-1');
+        //             $experiencesData[$index]['end'] = $endDate;
+        //         }
+        //         $experiencesData[$index] = ['tutor_id' => $tutorId,
+        //             'position' => $position['title'],
+        //             'company' => $position['company']['name'],
+        //             'current' => $current,
+        //             'start' => $position['startDate'],
+        //         ];
+        //     }
+        //     $index++;
+        // }
+        // if (!empty($experiencesData)) {
+        //     return $this->Experiences->saveExperiences($experiencesData);
+        // }
         return true;
     }
 }

@@ -22,7 +22,7 @@ class AppController extends BaseController
      */
     public function getProfileInfo($userId)
     {
-        $tutor = $this->Tutors->findByUserId($userId)->first();
-        return $tutor;
+        $tutor = $this->Tutors->findByUserId($userId)->select(['id'])->first();
+        return $tutor->id;
     }
 }
