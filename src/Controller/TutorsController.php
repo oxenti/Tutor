@@ -113,17 +113,17 @@ class TutorsController extends AppController
     public function edit($tutorId = null)
     {
         if ($this->request->is(['patch', 'post', 'put'])) {
+            $this->request->data['user']['id'] = $this->Auth->user('id');
             $tutor = $this->Tutors->editHandler($this->request->data, $tutorId);
-            if ($this->Tutors->save($tutor)) {
-                $message = 'The tutor has been saved.';
-                $this->set([
-                    'success' => true,
-                    'message' => $message,
-                    '_serialize' => ['success', 'message']
-                ]);
-            } else {
+            if (!$this->Tutors->save($tutor)) {
                 throw new NotFoundException('The tutor could not be saved. Please, try again.');
             }
+            $message = 'The tutor has been saved.';
+            $this->set([
+                'success' => true,
+                'message' => $message,
+                '_serialize' => ['success', 'message']
+            ]);
         }
     }
 
