@@ -23,7 +23,7 @@ class TutorsController extends AppController
             return true;
         } elseif ($user['usertype_id'] === 4) {
             if (isset($this->request->params['pass'][0])) {
-                return ($this->request->params['pass'][0] == $this->getProfileInfo($user['id'])->id);
+                return ($this->request->params['pass'][0] == $this->getProfileInfo($user['id']));
             }
             if ($this->request->action === 'index') {
                 throw new UnauthorizedException('You dont have access to this action ');
@@ -97,8 +97,6 @@ class TutorsController extends AppController
                     '_serialize' => ['success', 'message']
                 ]);
             } else {
-                debug($tutor);
-                die();
                 throw new NotFoundException('The tutor could not be saved. Please, try again.');
             }
         }
@@ -114,16 +112,15 @@ class TutorsController extends AppController
     {
         if ($this->request->is(['patch', 'post', 'put'])) {
             $tutor = $this->Tutors->editHandler($this->request->data, $tutorId);
-            if ($this->Tutors->save($tutor)) {
-                $message = 'The tutor has been saved.';
-                $this->set([
-                    'success' => true,
-                    'message' => $message,
-                    '_serialize' => ['success', 'message']
-                ]);
-            } else {
+            if (!$this->Tutors->save($tutor)) {
                 throw new NotFoundException('The tutor could not be saved. Please, try again.');
             }
+            $message = 'The tutor has been saved.';
+            $this->set([
+                'success' => true,
+                'message' => $message,
+                '_serialize' => ['success', 'message']
+            ]);
         }
     }
 
