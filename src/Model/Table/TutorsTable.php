@@ -109,6 +109,8 @@ class TutorsTable extends AppTable
         $tutor = $this->get($tutorId, [
             'contain' => ['Experiences']
         ]);
+        $userData = $postData['user'];
+        unset($postData['user']);
         $experienceIds = [];
         $experiences = [];
         if (isset($postData['experiences'])) {
@@ -127,6 +129,9 @@ class TutorsTable extends AppTable
         }
 
         $tutor = $this->patchEntity($tutor, $postData);
+        $user = $this->Users->get($userData['id'], ['contain' => ['Personalinformations']]);
+        $this->Users->patchEntity($user, $userData);
+        $tutor->user = $user;
 
         if (!empty($experiences)) {
             foreach ($experiences as $experience) {
