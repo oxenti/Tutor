@@ -166,17 +166,15 @@ class TutorsController extends AppController
             // $token = $this->request->data['usersocialdata']['linkedin_token'];
             // $linkedinData = $this->Linkedin->linkedinget('v1/people/~/positions:(title,company,start-date,end-date)', $token);
 
-            if ($this->Tutors->importLinkedinExperience($tutorId, $linkedinData)) {
-                $this->set([
-                    'success' => true,
-                        'data' => [
-                            'message' => __('Experiences imported from linkedin with success')
-                        ],
-                        '_serialize' => ['success', 'data']
-                    ]);
-            } else {
+            if (!$this->Tutors->importLinkedinExperience($tutorId, $linkedinData)) {
                 throw new NotFoundException('The Experiences could not be imported. Please, try again.');
             }
+            $this->set([
+                'success' => true,
+                'message' => __('Experiences imported from linkedin with success'),
+                '_serialize' => ['success', 'message']
+            ]);
+            
         }
     }
 }
