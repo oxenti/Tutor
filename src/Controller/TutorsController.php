@@ -30,6 +30,8 @@ class TutorsController extends AppController
                 return false;
             }
             return true;
+        } elseif ($user['usertype_id'] === 1 && $this->request->action === 'index') {
+            return true;
         } else {
             throw new UnauthorizedException('You dont have access to this action ');
             return false;
@@ -159,18 +161,16 @@ class TutorsController extends AppController
         $this->request->allowMethod(['post']);
         if ($this->request->data) {
             $userId = $this->Auth->user('id');
-            $tutorId = $this->getProfile($userId);
+            $tutorId = $this->getProfileInfo($userId);
             // caso a requisição seja feita utilizando o mesmo plugin do ws em versoes futuras
             // $token = $this->request->data['usersocialdata']['linkedin_token'];
             // $linkedinData = $this->Linkedin->linkedinget('v1/people/~/positions:(title,company,start-date,end-date)', $token);
-
+            $linkedinData = $this->request->data;
             if ($this->Tutors->importLinkedinExperience($tutorId, $linkedinData)) {
                 $this->set([
                     'success' => true,
-                        'data' => [
-                            'message' => __('Experiences imported from linkedin with success')
-                        ],
-                        '_serialize' => ['success', 'data']
+                    'message' => __('Experiences imported from linkedin with success'),
+                        '_serialize' => ['success', 'message']
                     ]);
             } else {
                 throw new NotFoundException('The Experiences could not be imported. Please, try again.');

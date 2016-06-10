@@ -38,7 +38,7 @@ class Tutor extends Entity
         'id' => false,
     ];
     
-    protected $_hidden = ['cpf', 'created', 'user_id', 'is_active', 'modified'];
+    protected $_hidden = ['cpf', 'created', 'is_active', 'modified'];
     
     protected $_virtual = ['name', 'avatar'];
 
