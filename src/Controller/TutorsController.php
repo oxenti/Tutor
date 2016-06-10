@@ -38,7 +38,7 @@ class TutorsController extends AppController
         }
         parent::isAuthorized($user);
     }
-    
+
     /**
      * Index method
      *
