@@ -37,9 +37,9 @@ class Tutor extends Entity
         '*' => true,
         'id' => false,
     ];
-    
+
     protected $_hidden = ['cpf', 'created', 'is_active', 'modified'];
-    
+
     protected $_virtual = ['name', 'avatar'];
 
     /**
@@ -50,9 +50,10 @@ class Tutor extends Entity
         $Personalinformations = TableRegistry::get('Users.Personalinformations');
         $userId = $this->_properties['user_id'];
         $personalinformations = $Personalinformations->find()
-        ->select(['first_name', 'last_name'])
-        ->where(['user_id' => $userId])
-        ->first();
+            ->join('Users')
+            ->select(['first_name', 'last_name'])
+            ->where(['Users.id' => $userId])
+            ->first();
         return (is_null($personalinformations))?' ':$personalinformations->first_name . ' ' . $personalinformations->last_name;
     }
 
@@ -61,12 +62,12 @@ class Tutor extends Entity
      */
     protected function _getAvatar()
     {
-        $Personalinformations = TableRegistry::get('Users');
+        $Users = TableRegistry::get('Users');
         $userId = $this->_properties['user_id'];
-        $user = $Personalinformations->find()
-        ->select(['avatar_path'])
-        ->where(['id' => $userId])
-        ->first();
+        $user = $Users->find()
+            ->select(['avatar_path'])
+            ->where(['id' => $userId])
+            ->first();
         $avatarPath = (is_null($user->avatar_path))? ' ' : $user->avatar_path;
         return $avatarPath;
     }
