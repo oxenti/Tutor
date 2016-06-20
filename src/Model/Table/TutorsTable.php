@@ -70,7 +70,7 @@ class TutorsTable extends AppTable
             ])
             ->add('cpf', 'valid', ['rule' => 'numeric'])
             ->add('cpf', 'unique', ['rule' => 'validateUnique', 'provider' => 'table']);
-        
+
         $validator
             ->add('user_id', 'valid', ['rule' => 'numeric']);
 
@@ -114,7 +114,9 @@ class TutorsTable extends AppTable
         $experienceIds = [];
         $experiences = [];
         if (isset($postData['experiences'])) {
-            foreach ($postData['experiences'] as $experience) {
+            foreach ($postData['experiences'] as $key => $experience) {
+                $postData['experiences'][$key]['start'] = new Time($experience['start']);
+                $postData['experiences'][$key]['end'] = new Time($experience['end']);
                 if (isset($experience['id'])) {
                     $experienceIds[] = $experience['id'];
                 }
