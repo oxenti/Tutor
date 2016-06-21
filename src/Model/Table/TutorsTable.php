@@ -129,6 +129,9 @@ class TutorsTable extends AppTable
                 }
             }
         }
+        if (isset($userData['avatar_path']['type']) && $userData['avatar_path']['type'] == 'base64') {
+            $userData['avatar_path'] = $this->Users->base64_to_jpeg($userData['avatar_path']['content']);
+        }
 
         $tutor = $this->patchEntity($tutor, $postData);
         $user = $this->Users->get($userData['id'], ['contain' => ['Personalinformations']]);
