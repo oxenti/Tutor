@@ -3,6 +3,8 @@ namespace Tutor\Model\Entity;
 
 use Cake\ORM\Entity;
 use Cake\ORM\TableRegistry;
+use Cake\Core\Configure;
+use Cake\Routing\Router;
 
 /**
  * Tutor Entity.
@@ -47,10 +49,15 @@ class Tutor extends Entity
      */
     protected function _getName()
     {
-        $Personalinformations = TableRegistry::get('Users.Personalinformations');
+        $Personalinformations = TableRegistry::get('User.Personalinformations');
         $userId = $this->_properties['user_id'];
         $personalinformations = $Personalinformations->find()
-            ->join('Users')
+            ->join(['Users' => [
+                'table' => 'users',
+                'type' => 'INNER',
+                'conditions' => 'Personalinformations.id = Users.personalinformation_id'
+            ]
+            ])
             ->select(['first_name', 'last_name'])
             ->where(['Users.id' => $userId])
             ->first();
@@ -69,6 +76,14 @@ class Tutor extends Entity
             ->where(['id' => $userId])
             ->first();
         $avatarPath = (is_null($user->avatar_path))? ' ' : $user->avatar_path;
-        return $avatarPath;
+        // return $avatarPath;
+        $path = '';
+        if ($avatarPath) {
+            if ($avatarPath) {
+                $baseUrl = empty(Configure::read('static_base_url')) ? Router::url('/', true) : Configure::read('static_base_url');
+                $path = (filter_var($avatarPath, FILTER_VALIDATE_URL)) ? $avatarPath : $baseUrl . $avatarPath;
+            }
+        }
+        return $path;
     }
 }
