@@ -85,11 +85,8 @@ class ExperiencesTable extends AppTable
             ->notEmpty('end');
 
         $validator
-            ->add('current', 'valid', ['rule' => 'numeric'])
+            ->add('current', 'valid', ['rule' => 'boolean'])
             ->allowEmpty('current');
-
-        $validator
-            ->add('is_active', 'valid', ['rule' => 'numeric']);
 
         return $validator;
     }
@@ -125,7 +122,7 @@ class ExperiencesTable extends AppTable
         }
         return true;
     }
-    
+
     /**
      *
      */

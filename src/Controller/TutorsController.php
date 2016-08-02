@@ -122,7 +122,8 @@ class TutorsController extends AppController
             $this->set([
                 'success' => true,
                 'message' => $message,
-                '_serialize' => ['success', 'message']
+                'tutor' => $tutor,
+                '_serialize' => ['success', 'message', 'tutor']
             ]);
         }
     }

@@ -75,7 +75,7 @@ class Tutor extends Entity
             ->select(['avatar_path'])
             ->where(['id' => $userId])
             ->first();
-        $avatarPath = (is_null($user->avatar_path))? ' ' : $user->avatar_path;
+        $avatarPath = (is_null($user->avatar_path))? null : $user->avatar_path;
         // return $avatarPath;
         $path = '';
         if ($avatarPath) {
