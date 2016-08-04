@@ -115,8 +115,17 @@ class TutorsTable extends AppTable
         $experiences = [];
         if (isset($postData['experiences'])) {
             foreach ($postData['experiences'] as $key => $experience) {
+                $postData['experiences'][$key]['tutor_id'] = $tutorId;
+                if ($experience['current'] == 'true') {
+                    $postData['experiences'][$key]['current'] = true;
+                }
+                if ($experience['current'] == 'false') {
+                    $postData['experiences'][$key]['current'] = false;
+                }
                 $postData['experiences'][$key]['start'] = new Time($experience['start']);
-                $postData['experiences'][$key]['end'] = new Time($experience['end']);
+                if (isset($experience['end'])) {
+                    $postData['experiences'][$key]['end'] = new Time($experience['end']);
+                }
                 if (isset($experience['id'])) {
                     $experienceIds[] = $experience['id'];
                 }
