@@ -82,7 +82,8 @@ class ExperiencesTable extends AppTable
 
         $validator
             ->add('end', 'valid', ['rule' => 'date'])
-            ->notEmpty('end');
+            ->allowEmpty('end');
+            // ->notEmpty('end');
 
         $validator
             ->add('current', 'valid', ['rule' => 'boolean'])
