@@ -96,7 +96,9 @@ class TutorsController extends AppController
                 $this->set([
                     'success' => true,
                     'message' => $message,
-                    '_serialize' => ['success', 'message']
+                    'id' => $tutor->id,
+                    'userId' => $tutor->user->id,
+                    '_serialize' => ['success', 'message', 'id', 'userId']
                 ]);
             } else {
                 throw new NotFoundException('The tutor could not be saved. Please, try again.');
